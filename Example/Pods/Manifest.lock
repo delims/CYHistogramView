@@ -1,0 +1,16 @@
+PODS:
+  - CYHistogramView (0.1.0)
+
+DEPENDENCIES:
+  - CYHistogramView (from `../`)
+
+EXTERNAL SOURCES:
+  CYHistogramView:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  CYHistogramView: ccdd439c7d3e731bec4691ef916fd39227075f4a
+
+PODFILE CHECKSUM: cc48f9f90a333b8d202c1fdc6a4f4be69330db1f
+
+COCOAPODS: 1.8.4
