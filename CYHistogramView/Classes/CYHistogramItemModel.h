@@ -12,9 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CYHistogramItemModel : NSObject
 
-@property (nonatomic,copy) NSString    *name;
+@property (nonatomic,copy) NSString    *text;
 @property (nonatomic,assign) float      percent;
-+ (instancetype)modelWithName:(NSString*)name percent:(float)percent;
++ (instancetype)modelWithText:(NSString*)text percent:(float)percent;
 @end
 
 NS_ASSUME_NONNULL_END

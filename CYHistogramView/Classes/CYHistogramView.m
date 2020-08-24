@@ -46,13 +46,22 @@ static UIColor *cy_colorWithRGB(int rgb)
 {
     if (_isInitted) return;
     _isInitted = YES;
+    _itemWidth = 30;
+    _verticalLineColor = cy_colorWithRGB(0x92A1B1);
+    _textColor = cy_colorWithRGB(0x92A1B1);
+    _gradientColors = @[(id)cy_colorWithRGB(0x2FCC72).CGColor,(id)cy_colorWithRGB(0x354a5e).CGColor];
+    _selectedItemTextColor = UIColor.whiteColor;
+    
     self.backgroundColor = cy_colorWithRGB(0x354a5e);
-    self.itemWidth = 30;
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    
+    if (self.itemWidth == 0) return;
+    if (self.itemModels.count == 0) return;
+    
     CGFloat appWidth = self.bounds.size.width;
     CGFloat height = self.bounds.size.height;
     NSUInteger count = self.itemModels.count;
@@ -83,18 +92,19 @@ static UIColor *cy_colorWithRGB(int rgb)
             view.frame = CGRectMake((space + width) * i + space, y, width, h);
             layer.frame = view.bounds;
 
-            if (self.selectedName.length && [self.selectedName isEqualToString:model.name]) {
+            if (self.selectedItemText.length && [self.selectedItemText isEqualToString:model.text]) {
                 label.font = [UIFont systemFontOfSize:14];
-                label.textColor = [UIColor whiteColor];
-
-                layer.backgroundColor = cy_colorWithRGB(0x2FCC72).CGColor;
+                label.textColor = _selectedItemTextColor;
+                layer.backgroundColor = (__bridge CGColorRef)self.gradientColors.firstObject;
             } else {
-                layer.colors = @[(id)cy_colorWithRGB(0x2FCC72).CGColor,(id)cy_colorWithRGB(0x354a5e).CGColor];
+                layer.colors = _gradientColors;
                 layer.startPoint = CGPointMake(0, 0);
                 layer.endPoint = CGPointMake(0, 1);
                 layer.locations = @[@(0.0) ,@(1)];
             }
-            UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:layer.frame byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight cornerRadii:CGSizeMake(15, 15)];
+            UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:layer.frame
+                                                       byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight
+                                                             cornerRadii:CGSizeMake(self.itemWidth*0.5, self.itemWidth*0.5)];
             CAShapeLayer *shapeLayer = [CAShapeLayer layer];
             shapeLayer.path = path.CGPath;
             layer.mask = shapeLayer;
@@ -105,6 +115,7 @@ static UIColor *cy_colorWithRGB(int rgb)
 
 - (void)setItemModels:(NSArray<CYHistogramItemModel *> *)itemModels
 {
+    if ([itemModels isKindOfClass:NSArray.class] == NO) return;
     _itemModels = itemModels;
     NSMutableArray *labels = NSMutableArray.array;
     NSMutableArray *views = NSMutableArray.array;
@@ -113,11 +124,12 @@ static UIColor *cy_colorWithRGB(int rgb)
 
     for (int i = 0; i < _itemModels.count; i ++) {
         CYHistogramItemModel *model = _itemModels[i];
+        NSAssert([model isKindOfClass:CYHistogramItemModel.class], @"itemModels must contain only `CYHistogramItemModel` instance");
         UILabel *label = [UILabel new];
         label.font = [UIFont systemFontOfSize:12];
-        label.textColor = cy_colorWithRGB(0x92A1B1);
+        label.textColor = self.textColor;
         label.textAlignment = NSTextAlignmentCenter;
-        label.text = model.name;
+        label.text = model.text;
         [labels addObject:label];
         [self addSubview:label];
 
@@ -130,7 +142,7 @@ static UIColor *cy_colorWithRGB(int rgb)
         [layers addObject:layer];
 
         UIView *line = [UIView new];
-        line.backgroundColor = cy_colorWithRGB(0x92A1B1);
+        line.backgroundColor = self.verticalLineColor;
         [lines addObject:line];
         [self addSubview:line];
     }
@@ -142,4 +154,35 @@ static UIColor *cy_colorWithRGB(int rgb)
     [self setNeedsLayout];
 }
 
+- (void)setVerticalLineColor:(UIColor *)verticalLineColor
+{
+    if ([verticalLineColor isKindOfClass:UIColor.class] == NO) return;
+    _verticalLineColor = verticalLineColor;
+    for (UIView *view in self.lineArray) {
+        view.backgroundColor = _verticalLineColor;
+    }
+}
+
+- (void)setItemWidth:(CGFloat)itemWidth
+{
+    if (_itemWidth == itemWidth) return;
+    _itemWidth = itemWidth;
+    [self setNeedsLayout];
+}
+
+- (void)setGradientColors:(NSArray *)gradientColors
+{
+    if ([gradientColors isKindOfClass:NSArray.class] == NO) return;
+    _gradientColors = gradientColors;
+    [self setNeedsLayout];
+}
+
+- (void)setTextColor:(UIColor *)textColor
+{
+    if ([textColor isKindOfClass:UIColor.class] == NO) return;
+    _textColor = textColor;
+    for (UILabel *label in self.labelArray) {
+        label.textColor = _textColor;
+    }
+}
 @end

@@ -1,6 +1,0 @@
-framework module CYHistogramView {
-  umbrella header "CYHistogramView-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -10,10 +10,10 @@
 
 @implementation CYHistogramItemModel
 
-+ (instancetype)modelWithName:(NSString *)name percent:(float)percent
++ (instancetype)modelWithText:(NSString *)text percent:(float)percent
 {
     CYHistogramItemModel *model = CYHistogramItemModel.new;
-    model.name = name;
+    model.text = text;
     model.percent = percent;
     return model;
 }

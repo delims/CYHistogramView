@@ -18,9 +18,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 ///Width of pillar
 @property (nonatomic,assign) CGFloat itemWidth;
+ 
+/**
+@brief Highlighted item's text
+*/
+@property (nullable,nonatomic,copy) NSString* selectedItemText;
 
-///Highlighted name
-@property (nullable,nonatomic,copy) NSString* selectedName;
+
+@property (nullable,nonatomic,strong) UIColor* selectedItemTextColor;
+
+@property (nullable,nonatomic,strong) UIColor* itemTextColor;
+
+@property (nullable,nonatomic,strong) UIColor* verticalLineColor;
+
+@property (nullable,nonatomic,strong) UIColor* textColor;
+
+/// an array contains gradientColors, the colors must be `CGColor`
+@property (nullable,nonatomic,copy) NSArray* gradientColors;
+
 
 @end
 
